@@ -53,6 +53,7 @@ class Room(object):
         "Constructs a Room with given number and lock"
         self._room_number = room_number
         self._lock = lock
+        self._is_available = True
 
     @property
     def room_number(self):
@@ -63,6 +64,9 @@ class Room(object):
     def lock(self):
         "Provides the lock for this room"
         return self.lock
+
+    def is_available(self):
+        return self._is_available
 
 
 class Guest(object):
@@ -98,6 +102,8 @@ class Hotel(object):
     def __init__(self, N):
         "Constructs a Hotel with N rooms"
         self.N = N
+        self.available = [(i, False, True) for i in range(1, N+1)]
+        self.rooms = [{i: None} for i in range(1, N+1)]
 
     def checkin(self, guest_name):
         """
@@ -106,7 +112,10 @@ class Hotel(object):
         Return:
             the corresponding Guest
         """
-        room_number = randint(1, self.N)
+        # room_number = randint(1, self.N)
+        #for i in self.rooms:
+        #    if i
+
         keycard = KeyCard()
         guest = Guest(guest_name, room_number, keycard)
         pass
@@ -131,5 +140,6 @@ class Hotel(object):
         Return:
             the corresponding Room
         """
+
         pass
 
