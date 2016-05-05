@@ -3,10 +3,8 @@ from random import randint
 
 class Key(object):
     "Key used in keycards and locks"
-
-    keycard = randint(1, 1000)
-    lock = randint(1, 10000)
-    pass
+    def generate_key(self):
+        return randint(1, 10000)
 
 
 class KeyCard(object):
@@ -58,12 +56,12 @@ class Room(object):
     @property
     def room_number(self):
         "Provides the number of this room"
-        return self.room_number
+        return self._room_number
 
     @property
     def lock(self):
         "Provides the lock for this room"
-        return self.lock
+        return self._lock
 
     def is_available(self):
         return self._is_available
@@ -79,17 +77,17 @@ class Guest(object):
     @property
     def guest_name(self):
         "Provides the name of this guest"
-        return self.guest_name
+        return self._guest_name
 
     @property
     def keycard(self):
         "Provides the keycard of this guest"
-        return self.keycard
+        return self._keycard
 
     @property
     def room_number(self):
         "Provides the number of the room occupied by this guest"
-        return self.room_number
+        return self._room_number
 
     def is_checkedin(self, hotel):
         "Checks if this guest is checked into this hotel"
@@ -103,7 +101,8 @@ class Hotel(object):
         "Constructs a Hotel with N rooms"
         self.N = N
         self.available = [(i, False, True) for i in range(1, N+1)]
-        self.rooms = [{i: None} for i in range(1, N+1)]
+        self.rooms = [Room(i, Lock(Key().generate_key(), Key().generate_key())) for i in range(1, N+1)]
+        self.guests = []
 
     def checkin(self, guest_name):
         """
@@ -112,13 +111,15 @@ class Hotel(object):
         Return:
             the corresponding Guest
         """
-        # room_number = randint(1, self.N)
-        #for i in self.rooms:
-        #    if i
+        for room in self.rooms:
+            if room.is_available():
 
-        keycard = KeyCard()
-        guest = Guest(guest_name, room_number, keycard)
-        pass
+                guest = Guest(guest_name, room.room_number, KeyCard(room.lock.first_key, room.lock.second_key))
+                # guest.is_checkedin()
+                self.guests.append(guest)
+                # need to set room to occupied
+
+                return guest
 
     def is_checkedin(self, guest_name):
         """
@@ -127,7 +128,12 @@ class Hotel(object):
         Return:
             True if the guest is checked in at this Hotel; False otherwise
         """
-        pass
+        for guest in self.guests:
+            if guest.guest_name == guest_name:
+                for room in self.rooms:
+                    if guest.room_number == room.room_number:
+                        return True
+        return False
 
     def checkout(self, guest_name):
         "Checks out the guest from the hotel"
@@ -140,6 +146,7 @@ class Hotel(object):
         Return:
             the corresponding Room
         """
-
-        pass
+        for guest in self.guests:
+            if guest.guest_name == guest_name:
+                return guest.room_number
 
