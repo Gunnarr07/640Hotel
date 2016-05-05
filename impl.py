@@ -111,6 +111,7 @@ class Hotel(object):
         Return:
             the corresponding Guest
         """
+        # check if guest is checked into hotel
         for room in self.rooms:
             if room.is_available():
 
@@ -120,6 +121,7 @@ class Hotel(object):
                 # need to set room to occupied
 
                 return guest
+        raise RuntimeError('FullCapacityError')
 
     def is_checkedin(self, guest_name):
         """
@@ -137,6 +139,7 @@ class Hotel(object):
 
     def checkout(self, guest_name):
         "Checks out the guest from the hotel"
+        # check that you cant check out a guest that is not checked in
         pass
 
     def room_of(self, guest_name):
