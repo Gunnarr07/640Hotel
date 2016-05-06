@@ -31,8 +31,8 @@ class Lock(object):
 
     def __init__(self, first_key, second_key):
         "Constructs a Lock with the given keys"
-        self.first_key = first_key
-        self.second_key = second_key
+        self._first_key = first_key
+        self._second_key = second_key
 
     def can_be_unlocked(self, keycard):
         """
@@ -41,7 +41,10 @@ class Lock(object):
         Return:
             True if the lock can be unlocked; False otherwise
         """
-        pass
+        if keycard.first_key == self._first_key and keycard.second_key == self._second_key:
+            return True
+        else:
+            return False
 
 
 class Room(object):
@@ -114,9 +117,8 @@ class Hotel(object):
         # check if guest is checked into hotel
         for room in self.rooms:
             if room.is_available():
-
+                room._lock = Lock(room.lock.second_key, Key.generate_key())
                 guest = Guest(guest_name, room.room_number, KeyCard(room.lock.first_key, room.lock.second_key))
-                # guest.is_checkedin()
                 self.guests.append(guest)
                 # need to set room to occupied
 
